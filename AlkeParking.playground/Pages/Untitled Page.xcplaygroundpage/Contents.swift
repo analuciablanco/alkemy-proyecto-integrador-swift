@@ -36,6 +36,18 @@ struct Parking {
         print("Welcome to AlkeParking!")
         onFinish(true)
     }
+    
+    func checkOutVehicle(plate: String,
+                         onSuccess: (Int) -> Void,
+                         onError: () -> Void ) {
+        guard let plateValidated = vehicles.first(where: { vehicle in
+            vehicle.plate == plate
+        }) else {
+            onError()
+            return
+        }
+        onSuccess(10)
+    }
 }
 
 struct Vehicle: Parkable, Hashable {

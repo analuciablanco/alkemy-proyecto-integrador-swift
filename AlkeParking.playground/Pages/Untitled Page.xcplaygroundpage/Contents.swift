@@ -6,8 +6,8 @@ protocol Parkable {
     var type: VehicleType { get }
     var checkInTime: Date { get }
     var discountCard: String? { get set }
+    // tiempo en minutos
     var parkedTime: Int { get }
-    var fee: Int { get }
 }
 
 // MARK: - Enums
@@ -16,6 +16,15 @@ enum VehicleType {
     case moto
     case miniBus
     case bus
+    
+    var fee: Int {
+        switch self {
+        case .car: return 20
+        case .moto: return 15
+        case .miniBus: return 25
+        case .bus: return 30
+        }
+    }
 }
 
 // MARK: - Structs
@@ -37,16 +46,21 @@ struct Parking {
         onFinish(true)
     }
     
-    func checkOutVehicle(plate: String,
+    mutating func checkOutVehicle(plate: String,
                          onSuccess: (Int) -> Void,
                          onError: () -> Void ) {
-        guard let plateValidated = vehicles.first(where: { vehicle in
+        guard let vehicleIn = vehicles.first(where: { vehicle in
             vehicle.plate == plate
         }) else {
             onError()
             return
         }
+        vehicles.remove(vehicleIn)
         onSuccess(10)
+    }
+    
+    func calculateFee(for type: VehicleType, parkedTime: Int, hasDiscountCard: Bool) -> Int {
+        
     }
 }
 
@@ -60,15 +74,6 @@ struct Vehicle: Parkable, Hashable {
     }
     
     var discountCard: String?
-    
-    var fee: Int {
-        switch type {
-        case .car: return 20
-        case .moto: return 15
-        case .miniBus: return 25
-        case .bus: return 30
-        }
-    }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(plate)
@@ -203,3 +208,10 @@ for vehicle in vehicles {
         }
     }
 }
+
+alkeParking.checkOutVehicle(plate: "AA111AA") { count in
+    print("Success", count)
+} onError: {
+    print("Rip")
+}
+

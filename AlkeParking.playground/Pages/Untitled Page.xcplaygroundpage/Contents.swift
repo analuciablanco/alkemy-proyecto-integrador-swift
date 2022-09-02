@@ -60,7 +60,22 @@ struct Parking {
     }
     
     func calculateFee(for type: VehicleType, parkedTime: Int, hasDiscountCard: Bool) -> Int {
+        // valor inicial de 2hrs
+        var fee = type.fee
         
+        // tiempo extra mayor a 2hrs
+        if parkedTime > 120 {
+            let extraTime = parkedTime - 120
+            let extraFee = ceil(Double(extraTime) / 15) * 5
+            
+            fee += Int(extraFee)
+            return fee
+        }
+        if hasDiscountCard {
+            fee = Int(Double(fee) * 0.85)
+        }
+        
+        return fee
     }
 }
 
@@ -215,3 +230,4 @@ alkeParking.checkOutVehicle(plate: "AA111AA") { count in
     print("Rip")
 }
 
+alkeParking.calculateFee(for: .car, parkedTime: 138, hasDiscountCard: false)

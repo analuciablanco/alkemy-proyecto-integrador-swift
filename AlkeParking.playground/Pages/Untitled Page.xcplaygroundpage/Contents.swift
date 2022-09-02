@@ -31,6 +31,7 @@ enum VehicleType {
 struct Parking {
     var vehicles: Set<Vehicle> = []
     let maxCapacity: Int = 20
+    var vehiclesOutEarnings: (vehicles: Int, earnings: Int) = (0,0)
     
     /* La función es definida como mutating pues al estar modificando una propiedad de una struct debe indicarse explícitamente que se desea que la instancia sea modificada. */
     mutating func checkInVehicle(_ vehicle: Vehicle, onFinish: (Bool) -> Void) {
@@ -55,13 +56,21 @@ struct Parking {
             onError()
             return
         }
+        
+        let hasDiscountCard: Bool = vehicleIn.discountCard?.isEmpty != nil
+        let totalFee = calculateFee(for: vehicleIn.type, parkedTime: vehicleIn.parkedTime, hasDiscountCard: hasDiscountCard)
+        
+        vehiclesOutEarnings.vehicles += 1
+        vehiclesOutEarnings.earnings += totalFee
+        
+        onSuccess(totalFee)
         vehicles.remove(vehicleIn)
-        onSuccess(10)
     }
     
     func calculateFee(for type: VehicleType, parkedTime: Int, hasDiscountCard: Bool) -> Int {
         // valor inicial de 2hrs
         var fee = type.fee
+        print("initial fee", fee)
         
         // tiempo extra mayor a 2hrs
         if parkedTime > 120 {
@@ -73,9 +82,20 @@ struct Parking {
         }
         if hasDiscountCard {
             fee = Int(Double(fee) * 0.85)
+            print("15% discount applied!")
         }
         
         return fee
+    }
+    
+    func earnings() {
+        print("\(vehiclesOutEarnings.vehicles) vehicles have checked out and have earnings of $\(vehiclesOutEarnings.earnings)")
+    }
+    
+    func listVehicles() {
+        for vehicle in vehicles {
+            print("Plate", vehicle.plate)
+        }
     }
 }
 
@@ -180,7 +200,7 @@ let vehicles = [
                             discountCard: nil),
 
     Vehicle(plate: "CC333FF",
-                            type: VehicleType.miniBus,
+                            type: VehicleType.bus,
                             checkInTime: Date(),
                             discountCard: nil),
     Vehicle(plate: "D222DDD",
@@ -224,10 +244,23 @@ for vehicle in vehicles {
     }
 }
 
-alkeParking.checkOutVehicle(plate: "AA111AA") { count in
-    print("Success", count)
+alkeParking.checkOutVehicle(plate: "CC333FF") { fee in
+    print("Your fee is \(fee). Come back soon.")
 } onError: {
-    print("Rip")
+    print("Sorry, the check-out failed")
 }
 
-alkeParking.calculateFee(for: .car, parkedTime: 138, hasDiscountCard: false)
+alkeParking.checkOutVehicle(plate: "AA111BB") { fee in
+    print("Your fee is \(fee). Come back soon.")
+} onError: {
+    print("Sorry, the check-out failed")
+}
+
+alkeParking.checkOutVehicle(plate: "CC333DD") { fee in
+    print("Your fee is \(fee). Come back soon.")
+} onError: {
+    print("Sorry, the check-out failed")
+}
+
+alkeParking.earnings()
+alkeParking.listVehicles()

@@ -3,9 +3,9 @@ import Foundation
 protocol Parkable {
     var plate: String { get }
     var type: VehicleType { get }
-    var date: Date { get }
-    var hasDiscountCard: Bool { get set }
-    var totalParkedTime: Double { get }
+    var checkInTime: Date { get }
+    var discountCard: String? { get set }
+    var parkedTime: Int { get }
     var fee: Int { get }
 }
 
@@ -23,9 +23,13 @@ struct Parking {
 struct Vehicle: Parkable, Hashable {
     let plate: String
     let type: VehicleType
-    let date: Date
-    var totalParkedTime: Double
-    var hasDiscountCard: Bool
+    let checkInTime: Date = Date()
+    
+    var parkedTime: Int {
+        return Calendar.current.dateComponents([.minute], from: checkInTime, to: Date()).minute ?? 0
+    }
+    
+    var discountCard: String?
     
     var fee: Int {
         switch type {

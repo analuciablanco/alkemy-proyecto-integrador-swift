@@ -33,11 +33,10 @@ struct Parking {
     private let maxCapacity: Int = 20
     private var vehiclesOutEarnings: (vehicles: Int, earnings: Int) = (0,0)
     
-    /* La función es definida como mutating pues al estar modificando una propiedad de una struct debe indicarse explícitamente que se desea que la instancia sea modificada. */
+    /* La función es definida como mutating
+     pues al estar modificando una propiedad de una struct
+     debe indicarse explícitamente que se desea que la instancia sea modificada. */
     mutating func checkInVehicle(_ vehicle: Vehicle, onFinish: (Bool) -> Void) {
-        // guard valida:
-        // 1. la cantidad de los vehiculos es menor a la capacidad maxima
-        // 2. si se pudo insertar el vehiculo al set
         guard vehicles.count < maxCapacity, vehicles.insert(vehicle).inserted else {
             onFinish(false)
             print("Sorry, the check-in failed")
@@ -78,8 +77,8 @@ struct Parking {
             let extraFee = ceil(Double(extraTime) / 15) * 5
             
             fee += Int(extraFee)
-            return fee
         }
+        
         if hasDiscountCard {
             fee = Int(Double(fee) * 0.85)
             print("15% discount applied!")
@@ -121,20 +120,6 @@ struct Vehicle: Parkable, Hashable {
 
 // MARK: - Instances
 var alkeParking = Parking()
-
-//let car = Vehicle(plate: "AA111AA", type: VehicleType.car, checkInTime: Date(), discountCard: "DISCOUNT_CARD_001")
-//let car2 = Vehicle(plate: "AA111AA", type: VehicleType.car, checkInTime: Date(), discountCard: "DISCOUNT_CARD_003")
-//let moto = Vehicle(plate: "B222BBB", type: VehicleType.moto, checkInTime: Date(), discountCard: nil)
-//let miniBus = Vehicle(plate: "CC333CC", type: VehicleType.miniBus, checkInTime: Date(), discountCard: nil)
-//let bus = Vehicle(plate: "DD444DD", type: VehicleType.bus, checkInTime: Date(), discountCard: "DISCOUNT_CARD_002")
-
-//alkeParking.vehicles.insert(car)
-//alkeParking.vehicles.insert(car2)
-//alkeParking.vehicles.insert(moto)
-//alkeParking.vehicles.insert(miniBus)
-//alkeParking.vehicles.insert(bus)
-
-//alkeParking.vehicles.remove(moto)
 
 let vehicles = [
     Vehicle(plate: "AA111AA",

@@ -29,9 +29,9 @@ enum VehicleType {
 
 // MARK: - Structs
 struct Parking {
-    var vehicles: Set<Vehicle> = []
-    let maxCapacity: Int = 20
-    var vehiclesOutEarnings: (vehicles: Int, earnings: Int) = (0,0)
+    private var vehicles: Set<Vehicle> = []
+    private let maxCapacity: Int = 20
+    private var vehiclesOutEarnings: (vehicles: Int, earnings: Int) = (0,0)
     
     /* La función es definida como mutating pues al estar modificando una propiedad de una struct debe indicarse explícitamente que se desea que la instancia sea modificada. */
     mutating func checkInVehicle(_ vehicle: Vehicle, onFinish: (Bool) -> Void) {
@@ -67,7 +67,7 @@ struct Parking {
         vehicles.remove(vehicleIn)
     }
     
-    func calculateFee(for type: VehicleType, parkedTime: Int, hasDiscountCard: Bool) -> Int {
+    private func calculateFee(for type: VehicleType, parkedTime: Int, hasDiscountCard: Bool) -> Int {
         // valor inicial de 2hrs
         var fee = type.fee
         print("initial fee", fee)
